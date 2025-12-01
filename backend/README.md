@@ -126,3 +126,4 @@ docker run -p 8000:8000 \
 | SUPABASE_KEY | Anon/public key de Supabase | Sí |
 | ENVIRONMENT | development/production | No |
 | PORT | Puerto del servidor (default: 8000) | No |
+# Railway deployment
