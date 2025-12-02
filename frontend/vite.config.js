@@ -11,7 +11,7 @@ export default defineConfig({
   preview: {
     port: process.env.PORT || 3000,
     host: '0.0.0.0',
-    allowedHosts: ['.railway.app'] // <-- Esta es la línea que agregué
+    allowedHosts: 'all' // Allow all hosts for Railway deployment
   }
 }
 )
