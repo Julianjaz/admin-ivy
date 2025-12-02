@@ -21,8 +21,8 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/package*.json ./
 
-# Install only production dependencies
-RUN npm install --production
+# Install ALL dependencies (including vite for preview)
+RUN npm install
 
 # Expose port
 EXPOSE 3000
