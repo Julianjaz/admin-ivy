@@ -1,12 +1,13 @@
 import axios from 'axios'
 
 // Get API URL from environment variable or use default
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_URL = import.meta.env.VITE_API_URL || 'https://admin-ivy-production-backend.up.railway.app'
 
 console.log('🔧 API Configuration:', {
   VITE_API_URL: import.meta.env.VITE_API_URL,
   API_URL: API_URL,
-  mode: import.meta.env.MODE
+  mode: import.meta.env.MODE,
+  hardcoded: 'https://admin-ivy-production-backend.up.railway.app'
 })
 
 // Create axios instance with default config
