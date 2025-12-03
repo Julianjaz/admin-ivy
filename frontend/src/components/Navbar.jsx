@@ -6,8 +6,9 @@ function Navbar() {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <Link to="/">
-            <h1>📊 Monitoring Platform</h1>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+            <img src="../../img/ivy.svg" alt="ivy Admin" style={{ height: '40px' }} />
+            <h1 style={{ margin: 0 }}>ivy Admin</h1>
           </Link>
         </div>
         <ul className="navbar-menu">

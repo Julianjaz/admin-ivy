@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // Get API URL from environment variable or use default
-const API_URL = import.meta.env.VITE_API_URL || 'https://admin-ivy-production-backend.up.railway.app'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 console.log('🔧 API Configuration:', {
   VITE_API_URL: import.meta.env.VITE_API_URL,
