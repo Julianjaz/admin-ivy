@@ -7,7 +7,7 @@ function Navbar() {
       <div className="navbar-container">
         <div className="navbar-brand">
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-            <img src="../../img/ivy.svg" alt="ivy Admin" style={{ height: '40px' }} />
+            <img src="/img/ivy.svg" alt="ivy Admin" style={{ height: '40px' }} />
             <h1 style={{ margin: 0 }}>ivy Admin</h1>
           </Link>
         </div>
