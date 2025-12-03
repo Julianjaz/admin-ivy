@@ -9,8 +9,8 @@ RUN npm install
 # Copy frontend source
 COPY frontend/ .
 
-# Accept build arguments
-ARG VITE_API_URL
+# Set API URL for build
+ARG VITE_API_URL=https://admin-ivy-production-backend.up.railway.app
 ENV VITE_API_URL=$VITE_API_URL
 
 # Build the app with environment variables
