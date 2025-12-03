@@ -10,12 +10,8 @@ export default defineConfig({
   },
   preview: {
     port: process.env.PORT || 3000,
-    host: '0.0.0.0',
-    allowedHosts: [
-      'admin-ivy-production-2f2e.up.railway.app',
-      '.railway.app',
-      'localhost'
-    ]
+    host: true,
+    strictPort: false
   }
 }
 )
