@@ -13,23 +13,23 @@ function Navbar() {
         </div>
         <ul className="navbar-menu">
           <li>
-            <Link to="/dashboard" className="nav-link">
-              Dashboard
+            <Link to="/" className="nav-link">
+              Home
             </Link>
           </li>
           <li>
-            <Link to="/suppliers" className="nav-link">
-              Suppliers
+            <Link to="/proveedores" className="nav-link">
+              Proveedores
             </Link>
           </li>
           <li>
-            <Link to="/metrics" className="nav-link">
-              Metrics
+            <Link to="/eventos" className="nav-link">
+              Eventos
             </Link>
           </li>
           <li>
-            <Link to="/alerts" className="nav-link">
-              Alerts
+            <Link to="/notificaciones" className="nav-link">
+              Notificaciones
             </Link>
           </li>
         </ul>
