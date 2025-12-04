@@ -200,6 +200,62 @@
   background: #c82333;
 }
 
+/* Tabs */
+.tabs-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  bottom: -2px;
+}
+
+.tab:hover {
+  color: #333;
+  background: #f5f5f5;
+}
+
+.tab.active {
+  color: #6366f1;
+  border-bottom-color: #6366f1;
+  font-weight: 600;
+}
+
+.tab-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.active-dot {
+  background: #10b981;
+}
+
+.approved-dot {
+  background: #6366f1;
+}
+
+.draft-dot {
+  background: #f59e0b;
+}
+
 @media (max-width: 768px) {
   .dashboard {
     padding: 1rem;
@@ -213,5 +269,16 @@
     flex-direction: column;
     gap: 1rem;
     align-items: flex-start;
+  }
+
+  .tabs-container {
+    gap: 0.5rem;
+    overflow-x: auto;
+  }
+
+  .tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
   }
 }

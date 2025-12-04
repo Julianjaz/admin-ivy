@@ -7,6 +7,7 @@ function Dashboard() {
   const [health, setHealth] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [activeTab, setActiveTab] = useState('active') // 'active', 'approved', 'draft'
 
   useEffect(() => {
     fetchData()
@@ -31,6 +32,25 @@ function Dashboard() {
       setLoading(false)
     }
   }
+
+  // Filter suppliers based on active tab
+  const getFilteredSuppliers = () => {
+    if (activeTab === 'active') {
+      return suppliers.filter(s => s.status === 'active')
+    } else if (activeTab === 'approved') {
+      return suppliers.filter(s => s.status === 'approved' || s.status === 'pending')
+    } else if (activeTab === 'draft') {
+      return suppliers.filter(s => s.status === 'draft')
+    }
+    return suppliers
+  }
+
+  const filteredSuppliers = getFilteredSuppliers()
+
+  // Count suppliers by status
+  const activeCount = suppliers.filter(s => s.status === 'active').length
+  const approvedCount = suppliers.filter(s => s.status === 'approved' || s.status === 'pending').length
+  const draftCount = suppliers.filter(s => s.status === 'draft').length
 
   return (
     <div className="dashboard">
@@ -89,15 +109,40 @@ function Dashboard() {
       {/* Suppliers Table */}
       <div className="data-section">
         <div className="section-header">
-          <h3>Recent Suppliers</h3>
+          <h3>Proveedores</h3>
           <button onClick={fetchData} className="refresh-button">
             🔄 Refresh
           </button>
         </div>
 
+        {/* Tabs */}
+        <div className="tabs-container">
+          <button 
+            className={`tab ${activeTab === 'active' ? 'active' : ''}`}
+            onClick={() => setActiveTab('active')}
+          >
+            <span className="tab-dot active-dot"></span>
+            Active ({activeCount})
+          </button>
+          <button 
+            className={`tab ${activeTab === 'approved' ? 'active' : ''}`}
+            onClick={() => setActiveTab('approved')}
+          >
+            <span className="tab-dot approved-dot"></span>
+            Approved ({approvedCount})
+          </button>
+          <button 
+            className={`tab ${activeTab === 'draft' ? 'active' : ''}`}
+            onClick={() => setActiveTab('draft')}
+          >
+            <span className="tab-dot draft-dot"></span>
+            Draft ({draftCount})
+          </button>
+        </div>
+
         {loading ? (
           <div className="loading">Loading...</div>
-        ) : suppliers.length > 0 ? (
+        ) : filteredSuppliers.length > 0 ? (
           <div className="table-container">
             <table className="data-table">
               <thead>
@@ -111,7 +156,7 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {suppliers.map((supplier) => (
+                {filteredSuppliers.map((supplier) => (
                   <tr key={supplier.id}>
                     <td>{supplier.id}</td>
                     <td>{supplier.business_name || 'N/A'}</td>
