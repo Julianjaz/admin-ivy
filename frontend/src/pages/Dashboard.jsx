@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getSuppliers, checkHealth } from '../services/api'
+import { getSuppliers, checkHealth, updateSupplierStatus } from '../services/api'
 import './Dashboard.css'
 
 function Dashboard() {
@@ -30,6 +30,17 @@ function Dashboard() {
       console.error('Error fetching data:', err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleStatusChange = async (supplierId, newStatus) => {
+    try {
+      await updateSupplierStatus(supplierId, newStatus)
+      // Refresh data after successful update
+      await fetchData()
+    } catch (err) {
+      console.error('Error updating status:', err)
+      alert('Error al actualizar el estado del proveedor')
     }
   }
 
@@ -153,6 +164,7 @@ function Dashboard() {
                   <th>Phone</th>
                   <th>Location</th>
                   <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -167,6 +179,19 @@ function Dashboard() {
                       <span className={`status-badge ${supplier.status}`}>
                         {supplier.status || 'N/A'}
                       </span>
+                    </td>
+                    <td>
+                      {supplier.status === 'draft' && (
+                        <button 
+                          className="activate-button"
+                          onClick={() => handleStatusChange(supplier.id, 'active')}
+                        >
+                          ✓ Activar
+                        </button>
+                      )}
+                      {supplier.status === 'active' && (
+                        <span className="status-text">Activo</span>
+                      )}
                     </td>
                   </tr>
                 ))}

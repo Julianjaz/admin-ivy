@@ -83,6 +83,35 @@ async def update_supplier(supplier_id: int, supplier: SupplierCreate):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.patch("/{supplier_id}/status")
+async def update_supplier_status(supplier_id: int, status: str):
+    """
+    Update supplier status (e.g., draft -> active)
+    """
+    try:
+        # Validate status
+        valid_statuses = ["draft", "pending", "approved", "active"]
+        if status not in valid_statuses:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Invalid status. Must be one of: {', '.join(valid_statuses)}"
+            )
+        
+        supabase: Client = get_supabase_client()
+        response = supabase.table("suppliers").update(
+            {"status": status}
+        ).eq("id", supplier_id).execute()
+        
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Supplier not found")
+        
+        return response.data[0]
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.delete("/{supplier_id}")
 async def delete_supplier(supplier_id: int):
     """

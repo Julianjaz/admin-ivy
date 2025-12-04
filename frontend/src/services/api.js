@@ -80,4 +80,14 @@ export const deleteSupplier = async (id) => {
   }
 }
 
+export const updateSupplierStatus = async (id, status) => {
+  try {
+    const response = await api.patch(`/api/suppliers/${id}/status?status=${status}`)
+    return response.data
+  } catch (error) {
+    console.error('Error updating supplier status:', error)
+    throw error
+  }
+}
+
 export default api

@@ -256,6 +256,38 @@
   background: #f59e0b;
 }
 
+/* Action Buttons */
+.activate-button {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.activate-button:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.activate-button:active {
+  transform: translateY(0);
+}
+
+.status-text {
+  color: #10b981;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
 @media (max-width: 768px) {
   .dashboard {
     padding: 1rem;
