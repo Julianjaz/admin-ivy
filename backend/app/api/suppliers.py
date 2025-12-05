@@ -49,6 +49,49 @@ async def get_supplier(supplier_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get("/{supplier_id}/details")
+async def get_supplier_details(supplier_id: int):
+    """
+    Get all related information for a supplier
+    """
+    try:
+        supabase: Client = get_supabase_client()
+        
+        # Get supplier basic info
+        supplier = supabase.table("suppliers").select("*").eq("id", supplier_id).execute()
+        if not supplier.data:
+            raise HTTPException(status_code=404, detail="Supplier not found")
+        
+        # Helper function to safely get data from a table using supplierId
+        def safe_get_table_data(table_name):
+            try:
+                response = supabase.table(table_name).select("*").eq("supplierId", supplier_id).execute()
+                return response.data[0] if response.data else None
+            except Exception as e:
+                print(f"Error fetching {table_name}: {str(e)}")
+                return None
+        
+        # Get related data from all tables (safely) using supplierId
+        bank_account = safe_get_table_data("supplier_bank_account")
+        disponibility = safe_get_table_data("supplier_disponibility")
+        experience = safe_get_table_data("supplier_experience")
+        fees = safe_get_table_data("supplier_fees")
+        service_capacity = safe_get_table_data("supplier_service_capacity")
+        
+        return {
+            "supplier": supplier.data[0],
+            "bank_account": bank_account,
+            "disponibility": disponibility,
+            "experience": experience,
+            "fees": fees,
+            "service_capacity": service_capacity
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/", response_model=Supplier)
 async def create_supplier(supplier: SupplierCreate):
     """

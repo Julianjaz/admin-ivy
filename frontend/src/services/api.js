@@ -90,4 +90,14 @@ export const updateSupplierStatus = async (id, status) => {
   }
 }
 
+export const getSupplierDetails = async (id) => {
+  try {
+    const response = await api.get(`/api/suppliers/${id}/details`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching supplier details:', error)
+    throw error
+  }
+}
+
 export default api

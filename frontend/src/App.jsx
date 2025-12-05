@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Dashboard from './pages/Dashboard'
+import SupplierDetail from './pages/SupplierDetail'
 import './App.css'
 
 // Placeholder components
@@ -34,6 +35,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/proveedores" element={<Dashboard />} />
+            <Route path="/proveedores/:id" element={<SupplierDetail />} />
             <Route path="/eventos" element={<Eventos />} />
             <Route path="/notificaciones" element={<Notificaciones />} />
             {/* Legacy routes */}

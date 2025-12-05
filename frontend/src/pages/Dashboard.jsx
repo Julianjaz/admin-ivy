@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getSuppliers, checkHealth, updateSupplierStatus } from '../services/api'
 import './Dashboard.css'
 
 function Dashboard() {
+  const navigate = useNavigate()
   const [suppliers, setSuppliers] = useState([])
   const [health, setHealth] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -80,39 +82,13 @@ function Dashboard() {
         <p>Monitoring Platform Overview</p>
       </div>
 
-      {/* Health Status */}
+      {/* Stats */}
       <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-icon">🟢</div>
-          <div className="stat-content">
-            <h3>API Status</h3>
-            <p className="stat-value">
-              {loading ? 'Checking...' : health ? health.status : 'Offline'}
-            </p>
-          </div>
-        </div>
-
         <div className="stat-card">
           <div className="stat-icon">📦</div>
           <div className="stat-content">
             <h3>Total Suppliers</h3>
             <p className="stat-value">{suppliers.length}</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon">📊</div>
-          <div className="stat-content">
-            <h3>Active Metrics</h3>
-            <p className="stat-value">0</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon">🔔</div>
-          <div className="stat-content">
-            <h3>Alerts</h3>
-            <p className="stat-value">0</p>
           </div>
         </div>
       </div>
@@ -191,30 +167,38 @@ function Dashboard() {
                       </span>
                     </td>
                     <td>
-                      {supplier.status === 'draft' && (
+                      <div className="action-buttons-group">
                         <button 
-                          className="activate-button"
-                          onClick={() => handleStatusChange(supplier.id, 'active', supplier.business_name)}
+                          className="detail-button"
+                          onClick={() => navigate(`/proveedores/${supplier.id}`)}
                         >
-                          ✓ Activar
+                          👁️ Ver Detalle
                         </button>
-                      )}
-                      {supplier.status === 'active' && (
-                        <button 
-                          className="draft-button"
-                          onClick={() => handleStatusChange(supplier.id, 'draft', supplier.business_name)}
-                        >
-                          ← Volver a Draft
-                        </button>
-                      )}
-                      {(supplier.status === 'approved' || supplier.status === 'pending') && (
-                        <button 
-                          className="activate-button"
-                          onClick={() => handleStatusChange(supplier.id, 'active', supplier.business_name)}
-                        >
-                          ✓ Activar
-                        </button>
-                      )}
+                        {supplier.status === 'draft' && (
+                          <button 
+                            className="activate-button"
+                            onClick={() => handleStatusChange(supplier.id, 'active', supplier.business_name)}
+                          >
+                            ✓ Activar
+                          </button>
+                        )}
+                        {supplier.status === 'active' && (
+                          <button 
+                            className="draft-button"
+                            onClick={() => handleStatusChange(supplier.id, 'draft', supplier.business_name)}
+                          >
+                            ← Volver a Draft
+                          </button>
+                        )}
+                        {(supplier.status === 'approved' || supplier.status === 'pending') && (
+                          <button 
+                            className="activate-button"
+                            onClick={() => handleStatusChange(supplier.id, 'active', supplier.business_name)}
+                          >
+                            ✓ Activar
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
