@@ -282,6 +282,31 @@
   transform: translateY(0);
 }
 
+.draft-button {
+  background: #f59e0b;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.draft-button:hover {
+  background: #d97706;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.draft-button:active {
+  transform: translateY(0);
+}
+
 .status-text {
   color: #10b981;
   font-weight: 500;

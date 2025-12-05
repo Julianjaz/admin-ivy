@@ -33,14 +33,24 @@ function Dashboard() {
     }
   }
 
-  const handleStatusChange = async (supplierId, newStatus) => {
-    try {
-      await updateSupplierStatus(supplierId, newStatus)
-      // Refresh data after successful update
-      await fetchData()
-    } catch (err) {
-      console.error('Error updating status:', err)
-      alert('Error al actualizar el estado del proveedor')
+  const handleStatusChange = async (supplierId, newStatus, businessName) => {
+    // Confirmation messages based on status change
+    let confirmMessage = ''
+    if (newStatus === 'active') {
+      confirmMessage = `¿Activar el proveedor "${businessName}"?`
+    } else if (newStatus === 'draft') {
+      confirmMessage = `¿Volver "${businessName}" a estado Draft?`
+    }
+
+    if (window.confirm(confirmMessage)) {
+      try {
+        await updateSupplierStatus(supplierId, newStatus)
+        // Refresh data after successful update
+        await fetchData()
+      } catch (err) {
+        console.error('Error updating status:', err)
+        alert('Error al actualizar el estado del proveedor')
+      }
     }
   }
 
@@ -184,13 +194,26 @@ function Dashboard() {
                       {supplier.status === 'draft' && (
                         <button 
                           className="activate-button"
-                          onClick={() => handleStatusChange(supplier.id, 'active')}
+                          onClick={() => handleStatusChange(supplier.id, 'active', supplier.business_name)}
                         >
                           ✓ Activar
                         </button>
                       )}
                       {supplier.status === 'active' && (
-                        <span className="status-text">Activo</span>
+                        <button 
+                          className="draft-button"
+                          onClick={() => handleStatusChange(supplier.id, 'draft', supplier.business_name)}
+                        >
+                          ← Volver a Draft
+                        </button>
+                      )}
+                      {(supplier.status === 'approved' || supplier.status === 'pending') && (
+                        <button 
+                          className="activate-button"
+                          onClick={() => handleStatusChange(supplier.id, 'active', supplier.business_name)}
+                        >
+                          ✓ Activar
+                        </button>
                       )}
                     </td>
                   </tr>
