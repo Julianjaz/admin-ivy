@@ -110,4 +110,14 @@ export const getSupplierProducts = async (id) => {
   }
 }
 
+export const getSupplierServices = async (id) => {
+  try {
+    const response = await api.get(`/api/suppliers/${id}/services`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching supplier services:', error)
+    throw error
+  }
+}
+
 export default api

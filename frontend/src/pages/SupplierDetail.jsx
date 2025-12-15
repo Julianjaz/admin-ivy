@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getSupplierDetails, getSupplierProducts } from '../services/api'
+import { getSupplierDetails, getSupplierProducts, getSupplierServices } from '../services/api'
 import './SupplierDetail.css'
 
 function SupplierDetail() {
@@ -8,8 +8,10 @@ function SupplierDetail() {
   const navigate = useNavigate()
   const [details, setDetails] = useState(null)
   const [products, setProducts] = useState([])
+  const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingProducts, setLoadingProducts] = useState(false)
+  const [loadingServices, setLoadingServices] = useState(false)
   const [error, setError] = useState(null)
   const [activeTab, setActiveTab] = useState('info') // 'info', 'productos', 'servicios'
 
@@ -20,6 +22,9 @@ function SupplierDetail() {
   useEffect(() => {
     if (activeTab === 'productos' && products.length === 0) {
       fetchProducts()
+    }
+    if (activeTab === 'servicios' && services.length === 0) {
+      fetchServices()
     }
   }, [activeTab])
 
@@ -45,6 +50,18 @@ function SupplierDetail() {
       console.error('Error fetching products:', err)
     } finally {
       setLoadingProducts(false)
+    }
+  }
+
+  const fetchServices = async () => {
+    try {
+      setLoadingServices(true)
+      const data = await getSupplierServices(id)
+      setServices(data.services || [])
+    } catch (err) {
+      console.error('Error fetching services:', err)
+    } finally {
+      setLoadingServices(false)
     }
   }
 
@@ -349,11 +366,104 @@ function SupplierDetail() {
       {/* Servicios Tab */}
       {activeTab === 'servicios' && (
         <div className="tab-content">
-          <div className="empty-tab-state">
-            <div className="empty-icon">🛠️</div>
-            <h3>Servicios</h3>
-            <p>Aquí se mostrarán los servicios del proveedor</p>
-          </div>
+          {loadingServices ? (
+            <div className="loading-products">Cargando servicios...</div>
+          ) : services.length > 0 ? (
+            <div className="products-grid">
+              {services.map((service) => {
+                const serviceData = service.data || {}
+                return (
+                  <div key={service.id} className="product-card service-card">
+                    {/* Service Image */}
+                    {serviceData.packageFiles && serviceData.packageFiles[0] && (
+                      <div className="product-image">
+                        <img src={serviceData.packageFiles[0]} alt={serviceData.packageName || 'Servicio'} />
+                      </div>
+                    )}
+                    
+                    {/* Service Info */}
+                    <div className="product-info">
+                      <h3 className="product-name">{serviceData.packageName || service.name || 'Sin nombre'}</h3>
+                      
+                      <div className="product-details">
+                        {serviceData.category && (
+                          <span className="product-badge category-badge">
+                            {serviceData.category}
+                          </span>
+                        )}
+                        {serviceData.optionFormatService && (
+                          <span className="product-badge type-badge">
+                            {serviceData.optionFormatService.replace(/-/g, ' ')}
+                          </span>
+                        )}
+                        {serviceData.targetAudience && (
+                          <span className="product-badge audience-badge">
+                            {serviceData.targetAudience === 'adults' ? 'Adultos' : serviceData.targetAudience}
+                          </span>
+                        )}
+                      </div>
+
+                      {serviceData.description && (
+                        <p className="product-description">{serviceData.description}</p>
+                      )}
+
+                      <div className="product-meta">
+                        {serviceData.packagePrice && (
+                          <div className="product-price">
+                            <span className="price-label">Precio:</span>
+                            <span className="price-value">${serviceData.packagePrice}</span>
+                          </div>
+                        )}
+                        {serviceData.priceType && (
+                          <div className="product-presentation">
+                            <span className="presentation-label">Tipo de precio:</span>
+                            <span className="presentation-value">
+                              {serviceData.priceType === 'per-hour' ? 'Por hora' : serviceData.priceType}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Service Details */}
+                      <div className="service-details">
+                        {serviceData.requiresGroupSize === 'si' && serviceData.groupSize && (
+                          <div className="service-detail-item">
+                            <strong>Tamaño de grupo:</strong> {serviceData.groupSize.min} - {serviceData.groupSize.max} personas
+                          </div>
+                        )}
+                        {serviceData.minServiceTime && serviceData.maxServiceTime && (
+                          <div className="service-detail-item">
+                            <strong>Tiempo de servicio:</strong> {serviceData.minServiceTime.time} - {serviceData.maxServiceTime.time} {serviceData.maxServiceTime.unit}
+                          </div>
+                        )}
+                        {serviceData.optionBartender === 'si' && (
+                          <div className="service-detail-item">
+                            ✓ Incluye Bartender
+                          </div>
+                        )}
+                        {serviceData.optionOfferMobileBar === 'si' && (
+                          <div className="service-detail-item">
+                            ✓ Ofrece Barra Móvil
+                          </div>
+                        )}
+                        {serviceData.optionOfferGlassware === 'si' && (
+                          <div className="service-detail-item">
+                            ✓ Ofrece Cristalería ({serviceData.optionTypeGlassware})
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="empty-tab-state">
+              <div className="empty-icon">🛠️</div>
+              <h3>Sin Servicios</h3>
+              <p>Este proveedor no tiene servicios registrados</p>
+            </div>
+          )}
         </div>
       )}
 
