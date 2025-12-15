@@ -49,6 +49,25 @@ async def get_supplier(supplier_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get("/{supplier_id}/products")
+async def get_supplier_products(supplier_id: int):
+    """
+    Get all products for a supplier
+    """
+    try:
+        supabase: Client = get_supabase_client()
+        
+        # Get products where supplier column matches supplier_id
+        response = supabase.table("products_created").select("*").eq("supplier", supplier_id).execute()
+        
+        return {
+            "products": response.data if response.data else [],
+            "count": len(response.data) if response.data else 0
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/{supplier_id}/details")
 async def get_supplier_details(supplier_id: int):
     """

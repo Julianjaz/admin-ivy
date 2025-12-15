@@ -100,4 +100,14 @@ export const getSupplierDetails = async (id) => {
   }
 }
 
+export const getSupplierProducts = async (id) => {
+  try {
+    const response = await api.get(`/api/suppliers/${id}/products`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching supplier products:', error)
+    throw error
+  }
+}
+
 export default api

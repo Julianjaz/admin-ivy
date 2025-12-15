@@ -1,18 +1,27 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getSupplierDetails } from '../services/api'
+import { getSupplierDetails, getSupplierProducts } from '../services/api'
 import './SupplierDetail.css'
 
 function SupplierDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [details, setDetails] = useState(null)
+  const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadingProducts, setLoadingProducts] = useState(false)
   const [error, setError] = useState(null)
+  const [activeTab, setActiveTab] = useState('info') // 'info', 'productos', 'servicios'
 
   useEffect(() => {
     fetchDetails()
   }, [id])
+
+  useEffect(() => {
+    if (activeTab === 'productos' && products.length === 0) {
+      fetchProducts()
+    }
+  }, [activeTab])
 
   const fetchDetails = async () => {
     try {
@@ -24,6 +33,18 @@ function SupplierDetail() {
       console.error('Error fetching details:', err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchProducts = async () => {
+    try {
+      setLoadingProducts(true)
+      const data = await getSupplierProducts(id)
+      setProducts(data.products || [])
+    } catch (err) {
+      console.error('Error fetching products:', err)
+    } finally {
+      setLoadingProducts(false)
     }
   }
 
@@ -117,8 +138,31 @@ function SupplierDetail() {
         </div>
       </div>
 
-      {/* Cards Grid */}
-      <div className="details-grid">
+      {/* Tabs Navigation */}
+      <div className="detail-tabs">
+        <button 
+          className={`detail-tab ${activeTab === 'info' ? 'active' : ''}`}
+          onClick={() => setActiveTab('info')}
+        >
+          📋 Información
+        </button>
+        <button 
+          className={`detail-tab ${activeTab === 'productos' ? 'active' : ''}`}
+          onClick={() => setActiveTab('productos')}
+        >
+          📦 Productos
+        </button>
+        <button 
+          className={`detail-tab ${activeTab === 'servicios' ? 'active' : ''}`}
+          onClick={() => setActiveTab('servicios')}
+        >
+          🛠️ Servicios
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'info' && (
+        <div className="details-grid">
         
         {/* Bank Account Card */}
         <div className="detail-card">
@@ -226,6 +270,93 @@ function SupplierDetail() {
         </div>
 
       </div>
+      )}
+
+      {/* Productos Tab */}
+      {activeTab === 'productos' && (
+        <div className="tab-content">
+          {loadingProducts ? (
+            <div className="loading-products">Cargando productos...</div>
+          ) : products.length > 0 ? (
+            <div className="products-grid">
+              {products.map((product) => {
+                const productData = product.data || {}
+                return (
+                  <div key={product.id} className="product-card">
+                    {/* Product Image */}
+                    {productData.productsFile && productData.productsFile[0] && (
+                      <div className="product-image">
+                        <img src={productData.productsFile[0]} alt={productData.productName || 'Producto'} />
+                      </div>
+                    )}
+                    
+                    {/* Product Info */}
+                    <div className="product-info">
+                      <h3 className="product-name">{productData.productName || product.name || 'Sin nombre'}</h3>
+                      
+                      <div className="product-details">
+                        {productData.productCategory && (
+                          <span className="product-badge category-badge">
+                            {productData.nameCategory || productData.productCategory}
+                          </span>
+                        )}
+                        {productData.productType && (
+                          <span className="product-badge type-badge">
+                            {productData.productType}
+                          </span>
+                        )}
+                      </div>
+
+                      {productData.productDescription && (
+                        <p className="product-description">{productData.productDescription}</p>
+                      )}
+
+                      <div className="product-meta">
+                        {productData.productPrice && (
+                          <div className="product-price">
+                            <span className="price-label">Precio:</span>
+                            <span className="price-value">${productData.productPrice}</span>
+                          </div>
+                        )}
+                        {productData.productPresentation && (
+                          <div className="product-presentation">
+                            <span className="presentation-label">Presentación:</span>
+                            <span className="presentation-value">{productData.productPresentation}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {productData.customIngredients && (
+                        <div className="product-ingredients">
+                          <strong>Ingredientes:</strong> {productData.customIngredients}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="empty-tab-state">
+              <div className="empty-icon">📦</div>
+              <h3>Sin Productos</h3>
+              <p>Este proveedor no tiene productos registrados</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Servicios Tab */}
+      {activeTab === 'servicios' && (
+        <div className="tab-content">
+          <div className="empty-tab-state">
+            <div className="empty-icon">🛠️</div>
+            <h3>Servicios</h3>
+            <p>Aquí se mostrarán los servicios del proveedor</p>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
